@@ -29,8 +29,8 @@ public class SmsAuthenticator implements Authenticator {
 		KeycloakSession session = context.getSession();
 		UserModel user = context.getUser();
 
-		String mobileNumber = user.getFirstAttribute("mobile_number");
-		// mobileNumber of course has to be further validated on proper format, country code, ...
+		String mobileNumber = user.getFirstAttribute("phone");
+		// phone of course has to be further validated on proper format, country code, ... @todo!
 
 		int length = Integer.parseInt(config.getConfig().get("length"));
 		int ttl = Integer.parseInt(config.getConfig().get("ttl"));
@@ -100,7 +100,7 @@ public class SmsAuthenticator implements Authenticator {
 
 	@Override
 	public boolean configuredFor(KeycloakSession session, RealmModel realm, UserModel user) {
-		return user.getFirstAttribute("mobile_number") != null;
+		return user.getFirstAttribute("phone") != null;
 	}
 
 	@Override
