@@ -4,6 +4,8 @@ import dasniko.keycloak.authenticator.gateway.SmsServiceFactory;
 import org.keycloak.authentication.AuthenticationFlowContext;
 import org.keycloak.authentication.AuthenticationFlowError;
 import org.keycloak.authentication.Authenticator;
+import org.keycloak.authentication.authenticators.browser.OTPFormAuthenticator;
+import org.keycloak.authentication.authenticators.browser.OTPFormAuthenticatorFactory;
 import org.keycloak.common.util.SecretGenerator;
 import org.keycloak.models.AuthenticationExecutionModel;
 import org.keycloak.models.AuthenticatorConfigModel;
@@ -15,6 +17,7 @@ import org.keycloak.theme.Theme;
 
 import javax.ws.rs.core.Response;
 import java.util.Locale;
+import java.util.Objects;
 
 /**
  * @author Niko Köbler, https://www.n-k.de, @dasniko
@@ -28,6 +31,11 @@ public class SmsAuthenticator implements Authenticator {
 		AuthenticatorConfigModel config = context.getAuthenticatorConfig();
 		KeycloakSession session = context.getSession();
 		UserModel user = context.getUser();
+
+		if (Objects.equals(user.getFirstAttribute("2fa"), "app")) {
+			OTPFormAuthenticatorFactory.SINGLETON.authenticate(context);
+			return;
+		}
 
 		String mobileNumber = user.getFirstAttribute("phone");
 		// phone of course has to be further validated on proper format, country code, ... @todo!
