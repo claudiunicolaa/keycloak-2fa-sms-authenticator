@@ -7,6 +7,8 @@ import org.keycloak.authentication.Authenticator;
 import org.keycloak.authentication.authenticators.browser.OTPFormAuthenticator;
 import org.keycloak.authentication.authenticators.browser.OTPFormAuthenticatorFactory;
 import org.keycloak.common.util.SecretGenerator;
+import org.keycloak.forms.login.LoginFormsPages;
+import org.keycloak.forms.login.freemarker.Templates;
 import org.keycloak.models.AuthenticationExecutionModel;
 import org.keycloak.models.AuthenticatorConfigModel;
 import org.keycloak.models.KeycloakSession;
@@ -33,6 +35,8 @@ public class SmsAuthenticator implements Authenticator {
 		UserModel user = context.getUser();
 
 		if (Objects.equals(user.getFirstAttribute("2fa"), "app")) {
+			context.challenge(context.form().setAttribute("realm", context.getRealm())
+				.createForm(Templates.getTemplate((LoginFormsPages.LOGIN_TOTP))));
 			OTPFormAuthenticatorFactory.SINGLETON.authenticate(context);
 			return;
 		}
