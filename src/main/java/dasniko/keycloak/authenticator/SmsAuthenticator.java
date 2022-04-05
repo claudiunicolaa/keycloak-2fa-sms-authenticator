@@ -36,7 +36,7 @@ public class SmsAuthenticator implements Authenticator {
 
 		if (Objects.equals(user.getFirstAttribute("2fa"), "app")) {
 			context.challenge(context.form().setAttribute("realm", context.getRealm())
-				.createForm(Templates.getTemplate((LoginFormsPages.LOGIN_TOTP))));
+				.createForm("login-otp.ftl"));
 			OTPFormAuthenticatorFactory.SINGLETON.authenticate(context);
 			return;
 		}
