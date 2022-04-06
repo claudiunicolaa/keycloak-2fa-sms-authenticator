@@ -6,17 +6,12 @@ import org.keycloak.authentication.AuthenticationFlowContext;
 import org.keycloak.authentication.AuthenticationFlowError;
 import org.keycloak.authentication.Authenticator;
 import org.keycloak.common.util.SecretGenerator;
-import org.keycloak.models.AuthenticationExecutionModel;
-import org.keycloak.models.AuthenticatorConfigModel;
-import org.keycloak.models.KeycloakSession;
-import org.keycloak.models.RealmModel;
-import org.keycloak.models.UserModel;
+import org.keycloak.models.*;
 import org.keycloak.sessions.AuthenticationSessionModel;
 import org.keycloak.theme.Theme;
 import org.keycloak.util.JsonSerialization;
 
 import javax.ws.rs.core.Response;
-import java.io.IOException;
 import java.util.Locale;
 
 
@@ -30,6 +25,10 @@ class TwoFactorAuthAttribute {
 
 	public boolean isSmsType() {
 		return type.equals("sms");
+	}
+
+	public boolean isAppType() {
+		return type.equals("app");
 	}
 }
 
@@ -57,11 +56,20 @@ public class SmsAuthenticator implements Authenticator {
 			TwoFactorAuthAttribute twoFactorAuth =  JsonSerialization.readValue(twoFactorAuthAttr, TwoFactorAuthAttribute.class);
 			if (twoFactorAuth.isSmsType()) {
 				smsAuth(context, user, config, session);
-			} else  {
+			} else if(twoFactorAuth.isAppType())  {
+				boolean hasOtpSet = session
+					.userCredentialManager()
+					.getConfiguredUserStorageCredentialTypesStream(context.getRealm(), user)
+					.anyMatch(ct -> ct.equals("otp"));
+				if (!hasOtpSet) {
+					user.addRequiredAction(UserModel.RequiredAction.CONFIGURE_TOTP);
+				}
+				context.success();
+			} else {
 				context.success();
 			}
-		} catch (IOException ioe) {
-			throw new RuntimeException(ioe);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 	}
 
