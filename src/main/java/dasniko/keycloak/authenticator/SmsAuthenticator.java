@@ -1,5 +1,6 @@
 package dasniko.keycloak.authenticator;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import dasniko.keycloak.authenticator.gateway.SmsServiceFactory;
 import org.keycloak.authentication.AuthenticationFlowContext;
 import org.keycloak.authentication.AuthenticationFlowError;
@@ -19,8 +20,9 @@ import java.io.IOException;
 import java.util.Locale;
 
 
+@JsonIgnoreProperties(value = { "required" })
+
 class TwoFactorAuthAttribute {
-	Boolean required;
 	String type;
 
 	public boolean isSmsType() {
