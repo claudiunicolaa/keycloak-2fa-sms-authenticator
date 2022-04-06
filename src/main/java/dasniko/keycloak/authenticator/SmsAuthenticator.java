@@ -14,32 +14,16 @@ import org.keycloak.sessions.AuthenticationSessionModel;
 import org.keycloak.theme.Theme;
 import org.keycloak.util.JsonSerialization;
 
-import javax.json.Json;
 import javax.ws.rs.core.Response;
 import java.io.IOException;
 import java.util.Locale;
-import java.util.Map;
-import java.util.Objects;
 
 
 class TwoFactorAuthAttribute {
-	Boolean required;
-	String set;
+	String type;
 
-	public Boolean getRequired() {
-		return required;
-	}
-
-	public void setRequired(Boolean required) {
-		this.required = required;
-	}
-
-	public String getSet() {
-		return set;
-	}
-
-	public void setSet(String set) {
-		this.set = set;
+	public boolean isSmsType() {
+		return type.equals("sms");
 	}
 }
 
@@ -65,7 +49,7 @@ public class SmsAuthenticator implements Authenticator {
 		}
 		try {
 			TwoFactorAuthAttribute twoFactorAuth =  JsonSerialization.readValue(twoFactorAuthAttr, TwoFactorAuthAttribute.class);
-			if (Objects.equals(twoFactorAuth.getSet(), "sms")) {
+			if (twoFactorAuth.isSmsType()) {
 				smsAuth(context, user, config, session);
 			} else  {
 				context.success();
