@@ -20,6 +20,7 @@ import java.util.Locale;
 
 
 class TwoFactorAuthAttribute {
+	Boolean required;
 	String type;
 
 	public boolean isSmsType() {
