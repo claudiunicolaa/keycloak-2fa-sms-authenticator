@@ -37,23 +37,6 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>org.keycloak</groupId>
-			<artifactId>keycloak-forms</artifactId>
-			<version>1.0-beta-1-20150523</version>
-			<type>pom</type>
-		</dependency>
-		<dependency>
-			<groupId>org.keycloak</groupId>
-			<artifactId>keycloak-forms-common-themes</artifactId>
-			<version>1.8.1.Final</version>
-		</dependency>
-		<dependency>
-			<groupId>org.keycloak</groupId>
-			<artifactId>keycloak-forms-common-freemarker</artifactId>
-			<version>1.8.1.Final</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
 			<groupId>software.amazon.awssdk</groupId>
 			<artifactId>sns</artifactId>
 			<version>${aws.version}</version>

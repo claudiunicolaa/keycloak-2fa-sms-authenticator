@@ -6,9 +6,6 @@
 			<module name="org.keycloak.keycloak-server-spi" export="true" />
 			<module name="org.keycloak.keycloak-server-spi-private" export="true" />
 			<module name="org.keycloak.keycloak-services" export="true" />
-			<module name="org.keycloak.keycloak-forms" export="true" />
-			<module name="org.keycloak.keycloak-forms-common-themes" export="true" />
-			<module name="org.keycloak.keycloak-forms-common-freemarker" export="true" />
 		</dependencies>
 	</deployment>
 </jboss-deployment-structure>
