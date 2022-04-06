@@ -19,6 +19,7 @@ import java.util.Objects;
 
 /**
  * @author Niko Köbler, https://www.n-k.de, @dasniko
+ * @author Claudiu Nicola, https://claudiunicola.xyz, @claudiunicolaa
  */
 public class SmsAuthenticator implements Authenticator {
 
@@ -31,7 +32,7 @@ public class SmsAuthenticator implements Authenticator {
 		UserModel user = context.getUser();
 
 		if (Objects.equals(user.getFirstAttribute("2fa"), "app")) {
-			context.attempted();
+			context.success();
 			return;
 		}
 
