@@ -58,7 +58,7 @@ public class SmsAuthenticator implements Authenticator {
 		UserModel user = context.getUser();
 		String twoFactorAuthAttr = user.getFirstAttribute("two_factor_auth");
 
-		// skip if the attribute doesn't exists
+		// skip if the attribute doesn't exist
 		if (twoFactorAuthAttr == null) {
 			context.success();
 			return;
@@ -66,31 +66,9 @@ public class SmsAuthenticator implements Authenticator {
 		try {
 			TwoFactorAuthAttribute twoFactorAuth =  JsonSerialization.readValue(twoFactorAuthAttr, TwoFactorAuthAttribute.class);
 			if (Objects.equals(twoFactorAuth.getSet(), "sms")) {
-				String mobileNumber = user.getFirstAttribute("phone");
-				// phone of course has to be further validated on proper format, country code, ... @todo!
-
-				int length = Integer.parseInt(config.getConfig().get("length"));
-				int ttl = Integer.parseInt(config.getConfig().get("ttl"));
-
-				String code = SecretGenerator.getInstance().randomString(length, SecretGenerator.DIGITS);
-				AuthenticationSessionModel authSession = context.getAuthenticationSession();
-				authSession.setAuthNote("code", code);
-				authSession.setAuthNote("ttl", Long.toString(System.currentTimeMillis() + (ttl * 1000L)));
-
-				try {
-					Theme theme = session.theme().getTheme(Theme.Type.LOGIN);
-					Locale locale = session.getContext().resolveLocale(user);
-					String smsAuthText = theme.getMessages(locale).getProperty("smsAuthText");
-					String smsText = String.format(smsAuthText, code, Math.floorDiv(ttl, 60));
-
-					SmsServiceFactory.get(config.getConfig()).send(mobileNumber, smsText);
-
-					context.challenge(context.form().setAttribute("realm", context.getRealm()).createForm(TPL_CODE));
-				} catch (Exception e) {
-					context.failureChallenge(AuthenticationFlowError.INTERNAL_ERROR,
-						context.form().setError("smsAuthSmsNotSent", e.getMessage())
-							.createErrorPage(Response.Status.INTERNAL_SERVER_ERROR));
-				}
+				smsAuth(context, user, config, session);
+			} else  {
+				context.success();
 			}
 		} catch (IOException ioe) {
 			throw new RuntimeException(ioe);
@@ -152,4 +130,36 @@ public class SmsAuthenticator implements Authenticator {
 	public void close() {
 	}
 
+	private void smsAuth(
+		AuthenticationFlowContext context,
+		UserModel user,
+		AuthenticatorConfigModel config,
+		KeycloakSession session
+	) {
+		String mobileNumber = user.getFirstAttribute("phone");
+		// phone of course has to be further validated on proper format, country code, ... @todo!
+
+		int length = Integer.parseInt(config.getConfig().get("length"));
+		int ttl = Integer.parseInt(config.getConfig().get("ttl"));
+
+		String code = SecretGenerator.getInstance().randomString(length, SecretGenerator.DIGITS);
+		AuthenticationSessionModel authSession = context.getAuthenticationSession();
+		authSession.setAuthNote("code", code);
+		authSession.setAuthNote("ttl", Long.toString(System.currentTimeMillis() + (ttl * 1000L)));
+
+		try {
+			Theme theme = session.theme().getTheme(Theme.Type.LOGIN);
+			Locale locale = session.getContext().resolveLocale(user);
+			String smsAuthText = theme.getMessages(locale).getProperty("smsAuthText");
+			String smsText = String.format(smsAuthText, code, Math.floorDiv(ttl, 60));
+
+			SmsServiceFactory.get(config.getConfig()).send(mobileNumber, smsText);
+
+			context.challenge(context.form().setAttribute("realm", context.getRealm()).createForm(TPL_CODE));
+		} catch (Exception e) {
+			context.failureChallenge(AuthenticationFlowError.INTERNAL_ERROR,
+				context.form().setError("smsAuthSmsNotSent", e.getMessage())
+					.createErrorPage(Response.Status.INTERNAL_SERVER_ERROR));
+		}
+	}
 }
