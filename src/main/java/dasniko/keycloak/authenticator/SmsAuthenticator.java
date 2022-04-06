@@ -21,7 +21,6 @@ import java.util.Locale;
 
 
 @JsonIgnoreProperties(value = { "required" })
-
 class TwoFactorAuthAttribute {
 	String type;
 
