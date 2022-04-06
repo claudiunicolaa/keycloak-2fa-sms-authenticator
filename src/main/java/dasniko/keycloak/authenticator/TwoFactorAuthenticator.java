@@ -36,7 +36,7 @@ class TwoFactorAuthAttribute {
  * @author Niko Köbler, https://www.n-k.de, @dasniko
  * @author Claudiu Nicola, https://claudiunicola.xyz, @claudiunicolaa
  */
-public class SmsAuthenticator implements Authenticator {
+public class TwoFactorAuthenticator implements Authenticator {
 
 	private static final String TPL_CODE = "login-sms.ftl";
 
@@ -55,19 +55,18 @@ public class SmsAuthenticator implements Authenticator {
 		try {
 			TwoFactorAuthAttribute twoFactorAuth =  JsonSerialization.readValue(twoFactorAuthAttr, TwoFactorAuthAttribute.class);
 			if (twoFactorAuth.isSmsType()) {
+				// type sms -> SMS code needed for authentication
 				smsAuth(context, user, config, session);
-			} else if(twoFactorAuth.isAppType())  {
-				boolean hasOtpSet = session
-					.userCredentialManager()
-					.getConfiguredUserStorageCredentialTypesStream(context.getRealm(), user)
-					.anyMatch(ct -> ct.equals("otp"));
-				if (!hasOtpSet) {
-					user.addRequiredAction(UserModel.RequiredAction.CONFIGURE_TOTP);
-				}
-				context.success();
-			} else {
-				context.success();
+				return;
 			}
+
+			// type app and OTP credential not set -> add CONFIGURE_TOTP required action if OTP credential not set
+			if(twoFactorAuth.isAppType() && !hasOtpCredentialSet(session, context.getRealm(), user))  {
+					user.addRequiredAction(UserModel.RequiredAction.CONFIGURE_TOTP);
+			}
+
+			// set current execution as successfully
+			context.success();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -159,5 +158,12 @@ public class SmsAuthenticator implements Authenticator {
 				context.form().setError("smsAuthSmsNotSent", e.getMessage())
 					.createErrorPage(Response.Status.INTERNAL_SERVER_ERROR));
 		}
+	}
+
+	private boolean hasOtpCredentialSet(KeycloakSession session, RealmModel realm, UserModel user) {
+		return session
+			.userCredentialManager()
+			.getConfiguredUserStorageCredentialTypesStream(realm, user)
+			.anyMatch(ct -> ct.equals("otp"));
 	}
 }

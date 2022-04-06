@@ -13,22 +13,23 @@ import java.util.List;
 
 /**
  * @author Niko Köbler, https://www.n-k.de, @dasniko
+ * @author Claudiu Nicola, https://claudiunicola.xyz, @claudiunicolaa
  */
-public class SmsAuthenticatorFactory implements AuthenticatorFactory {
+public class TwoFactorAuthenticatorFactory implements AuthenticatorFactory {
 
 	@Override
 	public String getId() {
-		return "sms-authenticator";
+		return "two-factor-authenticator";
 	}
 
 	@Override
 	public String getDisplayType() {
-		return "SMS Authentication";
+		return "Two Factor Authentication";
 	}
 
 	@Override
 	public String getHelpText() {
-		return "Validates an OTP sent via SMS to the users mobile phone.";
+		return "Validates an OTP sent via SMS to the users mobile phone if user attribute two_factor_auth.type=sms.";
 	}
 
 	@Override
@@ -67,7 +68,7 @@ public class SmsAuthenticatorFactory implements AuthenticatorFactory {
 
 	@Override
 	public Authenticator create(KeycloakSession session) {
-		return new SmsAuthenticator();
+		return new TwoFactorAuthenticator();
 	}
 
 	@Override
