@@ -25,6 +25,10 @@ import java.util.Locale;
 class TwoFactorAuthAttribute {
 	String type;
 
+	public void setType(String type) {
+		this.type = type;
+	}
+
 	public boolean isSmsType() {
 		return type.equals("sms");
 	}
