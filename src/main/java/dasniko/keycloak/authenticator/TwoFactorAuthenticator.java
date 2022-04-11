@@ -60,11 +60,6 @@ public class TwoFactorAuthenticator implements Authenticator {
 				return;
 			}
 
-			// type app and OTP credential not set -> add CONFIGURE_TOTP required action if OTP credential not set
-			if(twoFactorAuth.isAppType() && !hasOtpCredentialSet(session, context.getRealm(), user))  {
-					user.addRequiredAction(UserModel.RequiredAction.CONFIGURE_TOTP);
-			}
-
 			// set current execution as successfully
 			context.success();
 		} catch (Exception e) {
@@ -158,12 +153,5 @@ public class TwoFactorAuthenticator implements Authenticator {
 				context.form().setError("smsAuthSmsNotSent", e.getMessage())
 					.createErrorPage(Response.Status.INTERNAL_SERVER_ERROR));
 		}
-	}
-
-	private boolean hasOtpCredentialSet(KeycloakSession session, RealmModel realm, UserModel user) {
-		return session
-			.userCredentialManager()
-			.getConfiguredUserStorageCredentialTypesStream(realm, user)
-			.anyMatch(ct -> ct.equals("otp"));
 	}
 }
