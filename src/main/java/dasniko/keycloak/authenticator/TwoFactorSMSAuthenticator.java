@@ -36,7 +36,7 @@ class TwoFactorAuthAttribute {
  * @author Niko Köbler, https://www.n-k.de, @dasniko
  * @author Claudiu Nicola, https://claudiunicola.xyz, @claudiunicolaa
  */
-public class TwoFactorAuthenticator implements Authenticator {
+public class TwoFactorSMSAuthenticator implements Authenticator {
 
 	private static final String TPL_CODE = "login-sms.ftl";
 

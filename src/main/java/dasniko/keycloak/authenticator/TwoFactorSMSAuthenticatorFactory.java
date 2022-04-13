@@ -15,16 +15,16 @@ import java.util.List;
  * @author Niko Köbler, https://www.n-k.de, @dasniko
  * @author Claudiu Nicola, https://claudiunicola.xyz, @claudiunicolaa
  */
-public class TwoFactorAuthenticatorFactory implements AuthenticatorFactory {
+public class TwoFactorSMSAuthenticatorFactory implements AuthenticatorFactory {
 
 	@Override
 	public String getId() {
-		return "two-factor-authenticator";
+		return "two-factor-sms-authenticator";
 	}
 
 	@Override
 	public String getDisplayType() {
-		return "Two Factor Authentication";
+		return "Two Factor SMS Authentication";
 	}
 
 	@Override
@@ -70,7 +70,7 @@ public class TwoFactorAuthenticatorFactory implements AuthenticatorFactory {
 
 	@Override
 	public Authenticator create(KeycloakSession session) {
-		return new TwoFactorAuthenticator();
+		return new TwoFactorSMSAuthenticator();
 	}
 
 	@Override

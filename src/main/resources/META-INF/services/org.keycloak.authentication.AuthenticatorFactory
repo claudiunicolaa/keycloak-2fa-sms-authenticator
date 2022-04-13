@@ -1,1 +1,1 @@
-dasniko.keycloak.authenticator.TwoFactorAuthenticatorFactory
+dasniko.keycloak.authenticator.TwoFactorSMSAuthenticatorFactory
