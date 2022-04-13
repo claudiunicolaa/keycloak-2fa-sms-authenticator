@@ -95,9 +95,12 @@ public class TwoFactorSMSAuthenticator implements Authenticator {
 			// invalid
 			AuthenticationExecutionModel execution = context.getExecution();
 			if (execution.isRequired()) {
-				context.failureChallenge(AuthenticationFlowError.INVALID_CREDENTIALS,
-					context.form().setAttribute("realm", context.getRealm())
-						.setError("smsAuthCodeInvalid").createForm(TPL_CODE));
+				Response errorPage = context.form()
+					.setAttribute("realm", context.getRealm())
+					.setAttribute("phone", "")
+					.setError("smsAuthCodeInvalid")
+					.createForm(TPL_CODE);
+				context.failureChallenge(AuthenticationFlowError.INVALID_CREDENTIALS, errorPage);
 			} else if (execution.isConditional() || execution.isAlternative()) {
 				context.attempted();
 			}
@@ -128,7 +131,7 @@ public class TwoFactorSMSAuthenticator implements Authenticator {
 		AuthenticatorConfigModel config,
 		KeycloakSession session
 	) {
-		String mobileNumber = user.getFirstAttribute("phone");
+		String phone = user.getFirstAttribute("phone");
 		// phone of course has to be further validated on proper format, country code, ... @todo!
 
 		int length = Integer.parseInt(config.getConfig().get("length"));
@@ -145,13 +148,23 @@ public class TwoFactorSMSAuthenticator implements Authenticator {
 			String smsAuthText = theme.getMessages(locale).getProperty("smsAuthText");
 			String smsText = String.format(smsAuthText, code, Math.floorDiv(ttl, 60));
 
-			SmsServiceFactory.get(config.getConfig()).send(mobileNumber, smsText);
+			SmsServiceFactory.get(config.getConfig()).send(phone, smsText);
 
-			context.challenge(context.form().setAttribute("realm", context.getRealm()).createForm(TPL_CODE));
+			Response challengePage = context.form()
+				.setAttribute("realm", context.getRealm())
+				.setAttribute("phone", anonymisePhone(phone))
+				.createForm(TPL_CODE);
+			context.challenge(challengePage);
 		} catch (Exception e) {
-			context.failureChallenge(AuthenticationFlowError.INTERNAL_ERROR,
-				context.form().setError("smsAuthSmsNotSent", e.getMessage())
-					.createErrorPage(Response.Status.INTERNAL_SERVER_ERROR));
+			Response errorPage = context.form()
+				.setError("smsAuthSmsNotSent", e.getMessage())
+				.createErrorPage(Response.Status.INTERNAL_SERVER_ERROR);
+			context.failureChallenge(AuthenticationFlowError.INTERNAL_ERROR, errorPage);
 		}
+	}
+
+	private String anonymisePhone(String phone) {
+		String lastThreePhoneDigits = phone.substring(phone.length() - 3);
+		return "*".repeat(phone.length() - 3) + lastThreePhoneDigits;
 	}
 }

@@ -8,13 +8,16 @@
     			<label id="kc-attempted-username">${msg("smsAuthTitle")}</label>
     			<a id="reset-login" href="${url.loginRestartFlowUrl}">
     				<div class="kc-login-tooltip">
-						<i class="${properties.kcResetFlowIcon!}"></i>
+									<i class="${properties.kcResetFlowIcon!}"></i>
     					<span class="kc-tooltip-text">${msg("restartLoginTooltip")}</span>
     				</div>
     			</a>
     		</div>
     	</div>
 	<#elseif section = "form">
+		<div class="${properties.kcInputWrapperClass!}">
+			<label>${phone}</label>
+  </div>
 		<form id="kc-sms-code-login-form" class="${properties.kcFormClass!}" action="${url.loginAction}" method="post">
 			<div class="${properties.kcFormGroupClass!}">
 				<div class="${properties.kcLabelWrapperClass!}">
@@ -25,6 +28,11 @@
 				</div>
 			</div>
 			<div class="${properties.kcFormGroupClass!} ${properties.kcFormSettingClass!}">
+			<div id="kc-form-options" class="${properties.kcFormOptionsClass!}">
+					<div class="${properties.kcFormOptionsWrapperClass!}">
+						<span><a href="javascript:;" onClick="document.location.reload(true)">${msg("smsAuthResend")}</a></span>
+					</div>
+				</div>
 				<div id="kc-form-buttons" class="${properties.kcFormButtonsClass!}">
 					<input class="${properties.kcButtonClass!} ${properties.kcButtonPrimaryClass!} ${properties.kcButtonBlockClass!} ${properties.kcButtonLargeClass!}" type="submit" value="${msg("doLogIn")}"/>
 				</div>
