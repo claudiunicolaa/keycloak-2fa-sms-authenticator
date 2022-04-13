@@ -2,6 +2,18 @@
 <@layout.registrationLayout displayInfo=true; section>
 	<#if section = "header">
 		${msg("smsAuthTitle",realm.displayName)}
+	<#elseif section = "show-username">
+		<div class="${properties.kcFormGroupClass!}">
+    		<div id="kc-username">
+    			<label id="kc-attempted-username">${msg("smsAuthTitle")}</label>
+    			<a id="reset-login" href="${url.loginRestartFlowUrl}">
+    				<div class="kc-login-tooltip">
+						<i class="${properties.kcResetFlowIcon!}"></i>
+    					<span class="kc-tooltip-text">${msg("restartLoginTooltip")}</span>
+    				</div>
+    			</a>
+    		</div>
+    	</div>
 	<#elseif section = "form">
 		<form id="kc-sms-code-login-form" class="${properties.kcFormClass!}" action="${url.loginAction}" method="post">
 			<div class="${properties.kcFormGroupClass!}">
@@ -13,14 +25,8 @@
 				</div>
 			</div>
 			<div class="${properties.kcFormGroupClass!} ${properties.kcFormSettingClass!}">
-				<div id="kc-form-options" class="${properties.kcFormOptionsClass!}">
-					<div class="${properties.kcFormOptionsWrapperClass!}">
-						<span><a href="${url.loginUrl}">${kcSanitize(msg("backToLogin"))?no_esc}</a></span>
-					</div>
-				</div>
-
 				<div id="kc-form-buttons" class="${properties.kcFormButtonsClass!}">
-					<input class="${properties.kcButtonClass!} ${properties.kcButtonPrimaryClass!} ${properties.kcButtonBlockClass!} ${properties.kcButtonLargeClass!}" type="submit" value="${msg("doSubmit")}"/>
+					<input class="${properties.kcButtonClass!} ${properties.kcButtonPrimaryClass!} ${properties.kcButtonBlockClass!} ${properties.kcButtonLargeClass!}" type="submit" value="${msg("doLogIn")}"/>
 				</div>
 			</div>
 		</form>
