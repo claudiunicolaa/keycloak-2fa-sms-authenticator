@@ -114,7 +114,7 @@ public class TwoFactorSMSAuthenticator implements Authenticator {
 
 	@Override
 	public boolean configuredFor(KeycloakSession session, RealmModel realm, UserModel user) {
-		return user.getFirstAttribute("phone") != null;
+		return true;
 	}
 
 	@Override
