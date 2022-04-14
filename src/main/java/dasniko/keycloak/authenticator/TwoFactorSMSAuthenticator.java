@@ -132,8 +132,6 @@ public class TwoFactorSMSAuthenticator implements Authenticator {
 		KeycloakSession session
 	) {
 		String phone = user.getFirstAttribute("phone");
-		// phone of course has to be further validated on proper format, country code, ... @todo!
-
 		int length = Integer.parseInt(config.getConfig().get("length"));
 		int ttl = Integer.parseInt(config.getConfig().get("ttl"));
 
