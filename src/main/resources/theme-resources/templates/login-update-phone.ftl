@@ -21,7 +21,7 @@
 					<label for="phone" class="${properties.kcLabelClass!}">${msg("phoneAuthLabel")}</label>
 				</div>
 				<div class="${properties.kcInputWrapperClass!}">
-					<input type="text" id="phone" name="phone" class="${properties.kcInputClass!}" autofocus/>
+					<input type="text" id="phone" name="phone" class="${properties.kcInputClass!}" value="${(phone)!''}" autofocus/>
 				</div>
 			</div>
 			<div class="${properties.kcFormGroupClass!} ${properties.kcFormSettingClass!}">
