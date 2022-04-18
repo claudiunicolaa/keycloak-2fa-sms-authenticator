@@ -60,19 +60,6 @@
 		</dependency>
 	</dependencies>
 
-<!--	<dependencyManagement>-->
-<!--		<dependencies>-->
-<!--			<dependency>-->
-<!--				<groupId>com.github.dasniko</groupId>-->
-<!--				<artifactId>keycloak-spi-bom</artifactId>-->
-<!--				<version>17-SNAPSHOT</version>-->
-<!--&lt;!&ndash;				<version>${keycloak.version}</version>&ndash;&gt;-->
-<!--				<type>pom</type>-->
-<!--				<scope>import</scope>-->
-<!--			</dependency>-->
-<!--		</dependencies>-->
-<!--	</dependencyManagement>-->
-
 	<repositories>
 		<repository>
 			<id>jitpack.io</id>
