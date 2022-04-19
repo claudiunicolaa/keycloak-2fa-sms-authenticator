@@ -145,8 +145,8 @@ public class TwoFactorSMSAuthenticator implements Authenticator {
 		try {
 			Theme theme = session.theme().getTheme(Theme.Type.LOGIN);
 			Locale locale = session.getContext().resolveLocale(user);
-			String smsAuthText = theme.getMessages(locale).getProperty("smsAuthText");
-			String smsText = String.format(smsAuthText, code, Math.floorDiv(ttl, 60));
+			String smsAuthTextMessage = theme.getMessages(locale).getProperty("smsAuthTextMessage");
+			String smsText = String.format(smsAuthTextMessage, code, Math.floorDiv(ttl, 60));
 
 			SmsServiceFactory.get(config.getConfig()).send(phone, smsText);
 
