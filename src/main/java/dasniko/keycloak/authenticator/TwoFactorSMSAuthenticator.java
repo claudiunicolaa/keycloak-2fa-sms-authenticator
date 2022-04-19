@@ -2,6 +2,7 @@ package dasniko.keycloak.authenticator;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import dasniko.keycloak.authenticator.gateway.SmsServiceFactory;
+
 import org.keycloak.authentication.AuthenticationFlowContext;
 import org.keycloak.authentication.AuthenticationFlowError;
 import org.keycloak.authentication.Authenticator;
@@ -148,15 +149,9 @@ public class TwoFactorSMSAuthenticator implements Authenticator {
 
 			SmsServiceFactory.get(config.getConfig()).send(phone, smsText);
 
-			// skip the anonymise phone number step
-			// if "phone_set" auth note is set 
-			if	(authSession.getAuthNote("phone_set") == null) {
-				phone = anonymisePhone(phone);
-			}
-
 			Response challengePage = context.form()
 				.setAttribute("realm", context.getRealm())
-				.setAttribute("phone", phone)
+				.setAttribute("phone", anonymisePhone(phone))
 				.createForm(TPL_CODE);
 			context.challenge(challengePage);
 		} catch (Exception e) {
