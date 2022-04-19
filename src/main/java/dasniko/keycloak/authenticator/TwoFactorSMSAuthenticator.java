@@ -132,8 +132,6 @@ public class TwoFactorSMSAuthenticator implements Authenticator {
 		KeycloakSession session
 	) {
 		String phone = user.getFirstAttribute("phone");
-		// phone of course has to be further validated on proper format, country code, ... @todo!
-
 		int length = Integer.parseInt(config.getConfig().get("length"));
 		int ttl = Integer.parseInt(config.getConfig().get("ttl"));
 
@@ -150,9 +148,15 @@ public class TwoFactorSMSAuthenticator implements Authenticator {
 
 			SmsServiceFactory.get(config.getConfig()).send(phone, smsText);
 
+			// skip the anonymise phone number step
+			// if "phone_set" auth note is set 
+			if	(authSession.getAuthNote("phone_set") == null) {
+				phone = anonymisePhone(phone);
+			}
+
 			Response challengePage = context.form()
 				.setAttribute("realm", context.getRealm())
-				.setAttribute("phone", anonymisePhone(phone))
+				.setAttribute("phone", phone)
 				.createForm(TPL_CODE);
 			context.challenge(challengePage);
 		} catch (Exception e) {
